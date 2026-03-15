@@ -35,6 +35,12 @@ jobs:
         
       - name: Build
         run: npm run deploy
+
+      - name: Debug thumbnails
+        run: ls -la out/newspapers/thumbnails/ || echo 'thumbnails folder missing in out'
+
+      - name: Copy thumbnails to out
+        run: cp -r public/newspapers/thumbnails out/newspapers/thumbnails
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
