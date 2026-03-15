@@ -26,7 +26,7 @@ export default function NewspaperCard({ filename, title, date }: NewspaperCardPr
         </div>
         <div className="p-3">
           <h3 className="font-semibold text-gray-800 text-sm truncate">{title}</h3>
-          <p className="text-xs text-gray-500 mt-1">{date}</p>
+          {date && <p className="text-xs text-gray-500 mt-1">{date}</p>}
         </div>
       </div>
 

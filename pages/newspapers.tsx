@@ -54,16 +54,18 @@ export const getStaticProps: GetStaticProps = async () => {
     newspapers = files
       .filter(file => file.toLowerCase().endsWith('.pdf'))
       .map(filename => {
-        const stats = fs.statSync(path.join(newspapersDir, filename))
         const nameWithoutExt = path.parse(filename).name
-        
+        const dateMatch = nameWithoutExt.match(/\d{4}-\d{2}-\d{2}/)
+        const date = dateMatch ? new Date(dateMatch[0]).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-').toUpperCase() : ''
+        const title = nameWithoutExt.replace(/\s*-?\s*\d{4}-\d{2}-\d{2}/, '').trim()
+
         return {
           filename,
-          title: nameWithoutExt.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-          date: stats.mtime.toLocaleDateString()
+          title,
+          date
         }
       })
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .sort((a, b) => a.filename < b.filename ? 1 : -1)
   } catch (error) {
     console.log('Newspapers directory not found or empty')
   }
