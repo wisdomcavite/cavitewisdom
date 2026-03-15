@@ -37,7 +37,11 @@ jobs:
         run: npm run deploy
 
       - name: Debug thumbnails
-        run: ls -la out/newspapers/thumbnails/ || echo 'thumbnails folder missing in out'
+        run: |
+          echo '--- PDFs in public/newspapers ---'
+          ls -la public/newspapers/*.pdf
+          echo '--- Thumbnails generated ---'
+          ls -la out/newspapers/thumbnails/ || echo 'thumbnails folder missing in out'
 
       - name: Copy thumbnails to out
         run: cp -r public/newspapers/thumbnails out/newspapers/thumbnails
