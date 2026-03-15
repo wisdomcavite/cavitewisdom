@@ -8,7 +8,8 @@ interface NewspaperCardProps {
 
 export default function NewspaperCard({ filename, title, date }: NewspaperCardProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const filePath = `/newspapers/${encodeURIComponent(filename)}`
+  const basePath = process.env.NODE_ENV === 'production' ? '/cavitewisdom' : ''
+  const filePath = `${basePath}/newspapers/${encodeURIComponent(filename)}`
 
   return (
     <>
