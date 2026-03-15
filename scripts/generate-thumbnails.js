@@ -1,6 +1,12 @@
 const fs = require('fs')
 const path = require('path')
+const { createCanvas } = require('canvas')
 
+// polyfill DOMMatrix for pdfjs
+if (typeof DOMMatrix === 'undefined') {
+  const { DOMMatrix: CanvasDOMMatrix } = require('canvas')
+  global.DOMMatrix = CanvasDOMMatrix
+}
 const newspapersDir = path.join(__dirname, '../public/newspapers')
 const thumbnailsDir = path.join(newspapersDir, 'thumbnails')
 
@@ -22,7 +28,7 @@ async function generateThumbnail(pdf2img, filename) {
   for await (const image of doc) {
     if (pageIndex === 0) {
       // compress using sharp if available, otherwise save as-is
-      const { createCanvas, loadImage } = require('canvas')
+      const { loadImage } = require('canvas')
       const img = await loadImage(image)
       const canvas = createCanvas(img.width, img.height)
       const ctx = canvas.getContext('2d')
