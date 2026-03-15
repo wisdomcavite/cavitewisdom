@@ -50,10 +50,9 @@ export const getStaticProps: GetStaticProps = async () => {
 
   try {
     const files = fs.readdirSync(newspapersDir)
-    const supportedExtensions = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp']
     
     newspapers = files
-      .filter(file => supportedExtensions.some(ext => file.toLowerCase().endsWith(ext)))
+      .filter(file => file.toLowerCase().endsWith('.pdf'))
       .map(filename => {
         const stats = fs.statSync(path.join(newspapersDir, filename))
         const nameWithoutExt = path.parse(filename).name

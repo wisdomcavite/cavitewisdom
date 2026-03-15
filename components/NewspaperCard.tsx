@@ -7,63 +7,43 @@ interface NewspaperCardProps {
 }
 
 export default function NewspaperCard({ filename, title, date }: NewspaperCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const isPdf = filename.toLowerCase().endsWith('.pdf')
-  const imagePath = `/newspapers/${filename}`
+  const [isOpen, setIsOpen] = useState(false)
+  const filePath = `/newspapers/${encodeURIComponent(filename)}`
 
   return (
     <>
-      <div 
-        className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform"
-        onClick={() => setIsModalOpen(true)}
+      <div
+        className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer group"
+        onClick={() => setIsOpen(true)}
       >
-        <div className="aspect-[3/4] bg-gray-200 flex items-center justify-center">
-          {isPdf ? (
-            <div className="text-center p-4">
-              <div className="text-6xl text-red-600 mb-2">📄</div>
-              <p className="text-sm text-gray-600">PDF Document</p>
-            </div>
-          ) : (
-            <img 
-              src={imagePath} 
-              alt={title}
-              className="w-full h-full object-cover"
-            />
-          )}
+        <div className="aspect-[3/4] bg-gray-100 relative flex flex-col items-center justify-center gap-2">
+          <div className="text-6xl">📄</div>
+          <p className="text-sm text-gray-500">PDF Document</p>
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+            <span className="text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">📖</span>
+          </div>
         </div>
-        <div className="p-4">
-          <h3 className="font-semibold text-gray-800 mb-2">{title}</h3>
-          <p className="text-sm text-gray-600">{date}</p>
+        <div className="p-3">
+          <h3 className="font-semibold text-gray-800 text-sm truncate">{title}</h3>
+          <p className="text-xs text-gray-500 mt-1">{date}</p>
         </div>
       </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto">
-            <div className="p-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{title}</h3>
-              <button 
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                ×
-              </button>
-            </div>
-            <div className="p-4">
-              {isPdf ? (
-                <iframe 
-                  src={imagePath}
-                  className="w-full h-[70vh]"
-                  title={title}
-                />
-              ) : (
-                <img 
-                  src={imagePath} 
-                  alt={title}
-                  className="max-w-full h-auto"
-                />
-              )}
-            </div>
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col"
+          onClick={() => setIsOpen(false)}
+        >
+          <div className="flex justify-between items-center px-6 py-3 text-white" onClick={e => e.stopPropagation()}>
+            <h3 className="font-semibold">{title}</h3>
+            <button onClick={() => setIsOpen(false)} className="text-3xl hover:text-gray-300">×</button>
+          </div>
+          <div className="flex-1 px-4 pb-4" onClick={e => e.stopPropagation()}>
+            <embed
+              src={filePath}
+              type="application/pdf"
+              className="w-full h-full rounded"
+            />
           </div>
         </div>
       )}
