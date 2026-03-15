@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -20,35 +20,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          
+
       - name: Install canvas dependencies
         run: sudo apt-get update && sudo apt-get install -y --fix-missing libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Generate thumbnails
         run: node scripts/generate-thumbnails.js
+
+      - name: Commit new thumbnails
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/newspapers/thumbnails/
+          git diff --staged --quiet || git commit -m "chore: add generated thumbnails"
+          git push
 
       - name: Build
         run: npx next build
 
-      - name: Debug thumbnails
-        run: |
-          echo '--- PDFs in public/newspapers ---'
-          ls -la public/newspapers/*.pdf
-          echo '--- Thumbnails generated ---'
-          ls -la out/newspapers/thumbnails/ || echo 'thumbnails folder missing in out'
-
-      - name: Copy thumbnails to out
-        run: cp -r public/newspapers/thumbnails out/newspapers/thumbnails
-        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
