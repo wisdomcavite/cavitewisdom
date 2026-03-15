@@ -4,12 +4,14 @@ interface NewspaperCardProps {
   filename: string
   title: string
   date: string
+  hasThumbnail: boolean
 }
 
-export default function NewspaperCard({ filename, title, date }: NewspaperCardProps) {
+export default function NewspaperCard({ filename, title, date, hasThumbnail }: NewspaperCardProps) {
   const [isOpen, setIsOpen] = useState(false)
   const basePath = process.env.NODE_ENV === 'production' ? '/cavitewisdom' : ''
   const filePath = `${basePath}/newspapers/${encodeURIComponent(filename)}`
+  const thumbnailPath = `${basePath}/newspapers/thumbnails/${encodeURIComponent(filename.replace(/\.pdf$/i, '.jpg'))}`
 
   return (
     <>
@@ -17,9 +19,15 @@ export default function NewspaperCard({ filename, title, date }: NewspaperCardPr
         className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer group"
         onClick={() => setIsOpen(true)}
       >
-        <div className="aspect-[3/4] bg-gray-100 relative flex flex-col items-center justify-center gap-2">
-          <div className="text-6xl">📄</div>
-          <p className="text-sm text-gray-500">PDF Document</p>
+        <div className="aspect-[280/421] bg-gray-100 relative flex flex-col items-center justify-center gap-2">
+          {hasThumbnail ? (
+            <img src={thumbnailPath} alt={title} loading="lazy" className="w-full h-full object-cover" />
+          ) : (
+            <>
+              <div className="text-6xl">📄</div>
+              <p className="text-sm text-gray-500">PDF Document</p>
+            </>
+          )}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
             <span className="text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">📖</span>
           </div>

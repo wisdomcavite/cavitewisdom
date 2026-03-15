@@ -8,6 +8,7 @@ interface Newspaper {
   filename: string
   title: string
   date: string
+  hasThumbnail: boolean
 }
 
 interface NewspapersPageProps {
@@ -35,6 +36,7 @@ export default function Newspapers({ newspapers }: NewspapersPageProps) {
                 filename={newspaper.filename}
                 title={newspaper.title}
                 date={newspaper.date}
+                hasThumbnail={newspaper.hasThumbnail}
               />
             ))}
           </div>
@@ -58,11 +60,13 @@ export const getStaticProps: GetStaticProps = async () => {
         const dateMatch = nameWithoutExt.match(/\d{4}-\d{2}-\d{2}/)
         const date = dateMatch ? new Date(dateMatch[0]).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-').toUpperCase() : ''
         const title = nameWithoutExt.replace(/\s*-?\s*\d{4}-\d{2}-\d{2}/, '').trim()
+        const hasThumbnail = fs.existsSync(path.join(newspapersDir, 'thumbnails', `${nameWithoutExt}.jpg`))
 
         return {
           filename,
           title,
-          date
+          date,
+          hasThumbnail
         }
       })
       .sort((a, b) => a.filename < b.filename ? 1 : -1)
