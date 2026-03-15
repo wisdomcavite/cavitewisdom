@@ -9,6 +9,7 @@ interface NewspaperCardProps {
 
 export default function NewspaperCard({ filename, title, date, hasThumbnail }: NewspaperCardProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   const basePath = process.env.NODE_ENV === 'production' ? '/cavitewisdom' : ''
   const filePath = `${basePath}/newspapers/${encodeURIComponent(filename)}`
   const thumbnailPath = `${basePath}/newspapers/thumbnails/${encodeURIComponent(filename.replace(/\.pdf$/i, '.jpg'))}`
@@ -21,7 +22,16 @@ export default function NewspaperCard({ filename, title, date, hasThumbnail }: N
       >
         <div className="aspect-[280/421] bg-gray-100 relative flex flex-col items-center justify-center gap-2">
           {hasThumbnail ? (
-            <img src={thumbnailPath} alt={title} loading="lazy" className="w-full h-full object-cover" />
+            <>
+              {!loaded && <div className="absolute inset-0 bg-gray-200 animate-pulse" />}
+              <img
+                src={thumbnailPath}
+                alt={title}
+                loading="lazy"
+                onLoad={() => setLoaded(true)}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+              />
+            </>
           ) : (
             <>
               <div className="text-6xl">📄</div>
