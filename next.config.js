@@ -5,8 +5,13 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/cavitewisdom' : '',
-  basePath: process.env.NODE_ENV === 'production' ? '/cavitewisdom' : ''
+  // Do not set assetPrefix/basePath by default. When deploying to GitHub
+  // Pages with a custom domain we want assets to be served from the site
+  // root. If you need to publish to a repo subpath (e.g. wisdomcavite.github.io/cavitewisdom)
+  // set `process.env.REPO_BASE='/cavitewisdom'` in your CI and uncomment the
+  // lines below.
+  // assetPrefix: process.env.REPO_BASE || '',
+  // basePath: process.env.REPO_BASE || ''
 }
 
 module.exports = nextConfig
