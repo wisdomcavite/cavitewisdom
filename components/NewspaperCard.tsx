@@ -10,7 +10,10 @@ interface NewspaperCardProps {
 export default function NewspaperCard({ filename, title, date, hasThumbnail }: NewspaperCardProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const basePath = process.env.NODE_ENV === 'production' ? '/cavitewisdom' : ''
+  // Use REPO_BASE when deploying to a repo subpath (e.g. /cavitewisdom).
+  // For custom domain deployments keep this blank so assets resolve from site root.
+  const repoBase = process.env.REPO_BASE || ''
+  const basePath = repoBase.startsWith('/') ? repoBase : repoBase ? `/${repoBase}` : ''
   const filePath = `${basePath}/newspapers/${encodeURIComponent(filename)}`
   const thumbnailPath = `${basePath}/newspapers/thumbnails/${encodeURIComponent(filename.replace(/\.pdf$/i, '.jpg'))}`
 
